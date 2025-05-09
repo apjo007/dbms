@@ -1,0 +1,11 @@
+create function salarycal1(basic int )returns float
+deterministic 
+begin
+declare grsal, da, hra, ta float;
+set hra=0.5*basic;
+set da=basic;
+set ta=0.2*(hra+da);
+set grsal=basic+da+ta+hra;
+return grsal;
+end//
+select salarycal1(100)//
