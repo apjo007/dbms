@@ -1,0 +1,105 @@
+-- 1
+SELECT ename FROM emp WHERE job IN ('ANALYST', 'SALESMAN');
+
+-- 2
+SELECT * FROM emp WHERE hiredate < '1981-09-30';
+
+-- 3
+SELECT ename FROM emp WHERE job != 'MANAGER';
+
+-- 4
+SELECT ename FROM emp WHERE empno IN (7369, 7521, 7839, 7934, 7788);
+
+-- 5
+SELECT * FROM emp WHERE deptno NOT IN (30, 40, 10);
+
+-- 6
+SELECT ename FROM emp WHERE hiredate BETWEEN '1981-06-30' AND '1981-12-31';
+
+-- 7
+SELECT DISTINCT job FROM emp;
+
+-- 8
+SELECT ename FROM emp WHERE comm IS NULL;
+
+-- 9
+SELECT ename, job FROM emp WHERE mgr IS NULL;
+
+-- 10
+SELECT * FROM emp WHERE deptno IS NULL;
+
+-- 11
+SELECT ename FROM emp WHERE comm IS NOT NULL;
+
+-- 12
+SELECT ename FROM emp WHERE ename LIKE 'S%' OR ename LIKE '%S';
+
+-- 13
+SELECT ename FROM emp WHERE ename LIKE '_i%';
+
+-- 14
+SELECT COUNT(*) AS num_employees FROM emp;
+
+-- 15
+SELECT COUNT(DISTINCT job) AS num_designations FROM emp;
+
+-- 16
+SELECT SUM(sal) AS total_salaries FROM emp;
+
+-- 17
+SELECT MAX(sal) AS max_salary, MIN(sal) AS min_salary, AVG(sal) AS avg_salary FROM emp;
+
+-- 18
+SELECT MAX(sal) AS max_salary FROM emp WHERE job = 'SALESMAN';
+
+
+-- 1
+SELECT COUNT(*) AS num_employees, AVG(sal) AS avg_salary FROM emp WHERE deptno = 20;
+
+-- 2
+SELECT ename, sal, sal * 0.10 AS pf_amount FROM emp;
+
+-- 3
+SELECT ename FROM emp WHERE hiredate < DATE_SUB(CURDATE(), INTERVAL 2 YEAR);
+
+-- 4
+SELECT * FROM emp ORDER BY sal ASC;
+
+-- 5
+SELECT ename, hiredate FROM emp ORDER BY hiredate DESC;
+
+-- 6
+SELECT ename, sal, sal * 0.10 AS pf, sal * 0.50 AS hra, sal * 0.30 AS da, 
+       sal + sal * 0.50 + sal * 0.30 AS gross 
+FROM emp 
+ORDER BY gross ASC;
+
+-- 7
+SELECT deptno, COUNT(*) AS num_employees FROM emp GROUP BY deptno;
+
+-- 8
+SELECT deptno, SUM(sal) AS total_salary FROM emp GROUP BY deptno;
+
+-- 9
+SELECT job, COUNT(*) AS num_employees 
+FROM emp 
+GROUP BY job 
+ORDER BY num_employees DESC;
+
+-- 10
+SELECT job, SUM(sal) AS total_salary, MAX(sal) AS max_salary, MIN(sal) AS min_salary, AVG(sal) AS avg_salary 
+FROM emp 
+GROUP BY job;
+
+-- 11
+SELECT deptno, SUM(sal) AS total_salary, MAX(sal) AS max_salary, MIN(sal) AS min_salary, AVG(sal) AS avg_salary 
+FROM emp 
+WHERE deptno = 20 
+GROUP BY deptno;
+
+-- 12
+SELECT job, SUM(sal) AS total_salary, MAX(sal) AS max_salary, MIN(sal) AS min_salary, AVG(sal) AS avg_salary 
+FROM emp 
+WHERE deptno = 20 
+GROUP BY job 
+HAVING AVG(sal) > 1000;
