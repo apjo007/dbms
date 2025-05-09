@@ -1,0 +1,47 @@
+mysql> CREATE TABLE DEPT (
+    ->     DEPTNO INT PRIMARY KEY,                     -- Primary Key
+    ->     DNAME VARCHAR(50) NOT NULL UNIQUE,          -- Not Null and Unique
+    ->     LOC VARCHAR(50) NOT NULL                    -- Not Null
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE EMP (
+    ->     EMPNO INT PRIMARY KEY,                          -- Primary Key
+    ->     ENAME VARCHAR(50) NOT NULL UNIQUE,              -- Not Null and Unique
+    ->     JOB VARCHAR(50) NOT NULL,                       -- Not Null
+    ->     MGR INT,                                        -- Can be NULL
+    ->     HIREDATE DATE NOT NULL,                         -- Not Null
+    ->     SALARY DECIMAL(10, 2) NOT NULL CHECK (SALARY > 0),        -- Check > 0
+    ->     COMM DECIMAL(10, 2) DEFAULT 0.0 CHECK (COMM >= 0),        -- Default + Check
+    ->     DEPTNO INT NOT NULL,                            -- Not Null
+    ->     FOREIGN KEY (DEPTNO) REFERENCES DEPT(DEPTNO),   -- Foreign Key
+    ->     CHECK (JOB IN ('CLERK', 'MANAGER', 'DEVELOPER')) -- Only allowed JOB values
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> desc EMP;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| EMPNO    | int           | NO   | PRI | NULL    |       |
+| ENAME    | varchar(50)   | NO   | UNI | NULL    |       |
+| JOB      | varchar(50)   | NO   |     | NULL    |       |
+| MGR      | int           | YES  |     | NULL    |       |
+| HIREDATE | date          | NO   |     | NULL    |       |
+| SALARY   | decimal(10,2) | NO   |     | NULL    |       |
+| COMM     | decimal(10,2) | YES  |     | 0.00    |       |
+| DEPTNO   | int           | NO   | MUL | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+
+mysql> DESC dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| DEPTNO | int         | NO   | PRI | NULL    |       |
+| DNAME  | varchar(50) | NO   | UNI | NULL    |       |
+| LOC    | varchar(50) | NO   |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql>
