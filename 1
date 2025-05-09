@@ -1,0 +1,163 @@
+mysql> CREATE TABLE Department (
+    ->     DEPTNO INT PRIMARY KEY,
+    ->     DNAME VARCHAR(100),
+    ->     LOCATION VARCHAR(100)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Employee (
+    ->     EMPNO INT PRIMARY KEY,
+    ->     ENAME VARCHAR(100),
+    ->     JOB VARCHAR(50),
+    ->     MGR INT,
+    ->     HIREDATE DATE,
+    ->     SALARY DECIMAL(10, 2),
+    ->     COMM DECIMAL(10, 2),
+    ->     DEPTNO INT,
+    ->     FOREIGN KEY (DEPTNO) REFERENCES Department(DEPTNO),
+    ->     FOREIGN KEY (MGR) REFERENCES Employee(EMPNO) -- Self-referencing for manager
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> CREATE TABLE Project (
+    ->     PROJECTID INT PRIMARY KEY,
+    ->     PROJECTNAME VARCHAR(100),
+    ->     STARTDATE DATE,
+    ->     ENDDATE DATE,
+    ->     DEPTNO INT,
+    ->     FOREIGN KEY (DEPTNO) REFERENCES Department(DEPTNO)
+    -> );
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE Employee_Project (
+    ->     EMPNO INT,
+    ->     PROJECTID INT,
+    ->     ASSIGNEDDATE DATE,
+    ->     PRIMARY KEY (EMPNO, PROJECTID),
+    ->     FOREIGN KEY (EMPNO) REFERENCES Employee(EMPNO),
+    ->     FOREIGN KEY (PROJECTID) REFERENCES Project(PROJECTID)
+    -> );
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> DESC Employee;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| EMPNO    | int           | NO   | PRI | NULL    |       |
+| ENAME    | varchar(100)  | YES  |     | NULL    |       |
+| JOB      | varchar(50)   | YES  |     | NULL    |       |
+| MGR      | int           | YES  | MUL | NULL    |       |
+| HIREDATE | date          | YES  |     | NULL    |       |
+| SALARY   | decimal(10,2) | YES  |     | NULL    |       |
+| COMM     | decimal(10,2) | YES  |     | NULL    |       |
+| DEPTNO   | int           | YES  | MUL | NULL    |       |
++----------+---------------+------+-----+---------+-------+
+8 rows in set (0.02 sec)
+
+mysql> DESC Department;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| DEPTNO   | int          | NO   | PRI | NULL    |       |
+| DNAME    | varchar(100) | YES  |     | NULL    |       |
+| LOCATION | varchar(100) | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> DESC Project;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| PROJECTID   | int          | NO   | PRI | NULL    |       |
+| PROJECTNAME | varchar(100) | YES  |     | NULL    |       |
+| STARTDATE   | date         | YES  |     | NULL    |       |
+| ENDDATE     | date         | YES  |     | NULL    |       |
+| DEPTNO      | int          | YES  | MUL | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> DESC Employee_Project;
++--------------+------+------+-----+---------+-------+
+| Field        | Type | Null | Key | Default | Extra |
++--------------+------+------+-----+---------+-------+
+| EMPNO        | int  | NO   | PRI | NULL    |       |
+| PROJECTID    | int  | NO   | PRI | NULL    |       |
+| ASSIGNEDDATE | date | YES  |     | NULL    |       |
++--------------+------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> INSERT INTO Department (DEPTNO, DNAME, LOCATION) VALUES
+    -> (10, 'HR', 'New York'),
+    -> (20, 'IT', 'San Francisco'),
+    -> (30, 'Finance', 'Chicago');
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Employee (EMPNO, ENAME, JOB, MGR, HIREDATE, SALARY, COMM, DEPTNO) VALUES
+    -> (1001, 'Alice Johnson', 'Manager', NULL, '2020-01-15', 90000, 5000, 10),
+    -> (1002, 'Bob Smith', 'Developer', 1001, '2021-03-22', 70000, 2000, 20),
+    -> (1003, 'Charlie Rose', 'Analyst', 1001, '2022-06-10', 65000, NULL, 30),
+    -> (1004, 'Diana Green', 'Developer', 1002, '2023-02-01', 68000, NULL, 20);
+Query OK, 4 rows affected (0.02 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Project (PROJECTID, PROJECTNAME, STARTDATE, ENDDATE, DEPTNO) VALUES
+    -> (501, 'Website Redesign', '2023-01-01', '2023-06-30', 20),
+    -> (502, 'HR Onboarding System', '2023-03-01', '2023-08-31', 10),
+    -> (503, 'Budget Planning', '2023-04-01', '2023-09-30', 30);
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Employee_Project (EMPNO, PROJECTID, ASSIGNEDDATE) VALUES
+    -> (1002, 501, '2023-01-15'),
+    -> (1004, 501, '2023-02-01'),
+    -> (1001, 502, '2023-03-10'),
+    -> (1003, 503, '2023-04-05'),
+    -> (1002, 503, '2023-04-10'); -- Example of an employee working on multiple projects
+Query OK, 5 rows affected (0.02 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> select * from Department;
++--------+---------+---------------+
+| DEPTNO | DNAME   | LOCATION      |
++--------+---------+---------------+
+|     10 | HR      | New York      |
+|     20 | IT      | San Francisco |
+|     30 | Finance | Chicago       |
++--------+---------+---------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from Employee;
++-------+---------------+-----------+------+------------+----------+---------+--------+
+| EMPNO | ENAME         | JOB       | MGR  | HIREDATE   | SALARY   | COMM    | DEPTNO |
++-------+---------------+-----------+------+------------+----------+---------+--------+
+|  1001 | Alice Johnson | Manager   | NULL | 2020-01-15 | 90000.00 | 5000.00 |     10 |
+|  1002 | Bob Smith     | Developer | 1001 | 2021-03-22 | 70000.00 | 2000.00 |     20 |
+|  1003 | Charlie Rose  | Analyst   | 1001 | 2022-06-10 | 65000.00 |    NULL |     30 |
+|  1004 | Diana Green   | Developer | 1002 | 2023-02-01 | 68000.00 |    NULL |     20 |
++-------+---------------+-----------+------+------------+----------+---------+--------+
+4 rows in set (0.00 sec)
+
+mysql> select * from Employee_Project;
++-------+-----------+--------------+
+| EMPNO | PROJECTID | ASSIGNEDDATE |
++-------+-----------+--------------+
+|  1001 |       502 | 2023-03-10   |
+|  1002 |       501 | 2023-01-15   |
+|  1002 |       503 | 2023-04-10   |
+|  1003 |       503 | 2023-04-05   |
+|  1004 |       501 | 2023-02-01   |
++-------+-----------+--------------+
+5 rows in set (0.00 sec)
+
+mysql> select * from Project;
++-----------+----------------------+------------+------------+--------+
+| PROJECTID | PROJECTNAME          | STARTDATE  | ENDDATE    | DEPTNO |
++-----------+----------------------+------------+------------+--------+
+|       501 | Website Redesign     | 2023-01-01 | 2023-06-30 |     20 |
+|       502 | HR Onboarding System | 2023-03-01 | 2023-08-31 |     10 |
+|       503 | Budget Planning      | 2023-04-01 | 2023-09-30 |     30 |
++-----------+----------------------+------------+------------+--------+
+3 rows in set (0.00 sec)
+
+mysql>
