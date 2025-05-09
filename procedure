@@ -1,0 +1,24 @@
+delimiter //
+
+create procedure cal()
+begin
+declare s1,s2,s3,tot int;
+declare per float(5,2);
+declare grd varchar(30);
+declare i,cnt,id int;
+set i=0;
+select count(*) into cnt from student;
+while i<cnt do
+select sno,sub1,sub2,sub3 into id ,s1,s2,s3 from student limit i,1;
+set tot=s1+s2+s3;
+set per=tot/3;
+if per>=40 then
+set grd="pass";
+else 
+set grd="fail";
+end if;
+select tot,per,grd;
+update student set total=tot, percentage=per, grade=grd where sno=id;
+set i=i+1;
+end while;
+end//
