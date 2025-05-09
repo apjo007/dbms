@@ -1,0 +1,81 @@
+CREATE DATABASE dbms;
+USE dbms;
+
+CREATE TABLE student1 (
+    sno INT,
+    name VARCHAR(30),
+    sub1 INT,
+    sub2 INT,
+    sub3 INT
+);
+
+INSERT INTO student1 VALUES
+(1, 'avyay', 89, 90, 99),
+(2, 'harsh', 81, 10, 19),
+(3, 'kedar', 82, 54, 39),
+(4, 'arnav', 84, 40, 49),
+(5, 'atharv', 59, 50, 59),
+(6, 'yash', 85, 93, 91),
+(7, 'aryan', 81, 51, 19),
+(8, 'pranav', 39, 10, 19),
+(9, 'jo', 83, 90, 93),
+(10, 'beck', 79, 53, 54);
+
+CREATE TABLE student_first (
+    sno INT,
+    name VARCHAR(30),
+    sub1 INT,
+    sub2 INT,
+    sub3 INT,
+    total INT,
+    percentage FLOAT(5,2)
+);
+
+CREATE TABLE student_pass LIKE student_first;
+CREATE TABLE student_fail LIKE student_first;
+
+DELIMITER //
+
+CREATE PROCEDURE cal2()
+BEGIN
+    DECLARE s1, s2, s3, tot INT;
+    DECLARE per FLOAT(5,2);
+    DECLARE sname VARCHAR(30);
+    DECLARE id INT;
+    DECLARE i, cnt INT;
+
+    DECLARE stu_cur CURSOR FOR SELECT sno, name, sub1, sub2, sub3 FROM student1;
+
+    SET i = 0;
+    SELECT COUNT(*) INTO cnt FROM student1;
+
+    OPEN stu_cur;
+
+    REPEAT
+        FETCH stu_cur INTO id, sname, s1, s2, s3;
+
+        SET tot = s1 + s2 + s3;
+        SET per = tot / 3;
+
+        IF per >= 60 THEN
+            INSERT INTO student_first VALUES(id, sname, s1, s2, s3, tot, per);
+        ELSEIF per >= 50 THEN
+            INSERT INTO student_pass VALUES(id, sname, s1, s2, s3, tot, per);
+        ELSE
+            INSERT INTO student_fail VALUES(id, sname, s1, s2, s3, tot, per);
+        END IF;
+
+        SET i = i + 1;
+    UNTIL i >= cnt
+    END REPEAT;
+
+    CLOSE stu_cur;
+END //
+
+DELIMITER ;
+
+CALL cal2();
+
+SELECT * FROM student_first;
+SELECT * FROM student_pass;
+SELECT * FROM student_fail;
